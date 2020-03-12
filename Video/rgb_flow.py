@@ -15,7 +15,7 @@ import os
 import numpy as np
 import cv2 as cv
 from multiprocessing import Pool
-from Vedio.flow_visualize import flow_to_color
+from Video.flow_visualize import flow_to_color
 
 
 video_dir = '/home/alex/Documents/dataset/opencv_video'

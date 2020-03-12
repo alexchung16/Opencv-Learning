@@ -22,6 +22,8 @@ video_dir = '/home/alex/Documents/dataset/opencv_video'
 pedestrian_dir = os.path.join(video_dir, 'pedestrian.avi')
 
 
+
+
 if __name__ == "__main__":
 
     cap = cv.VideoCapture(pedestrian_dir)
@@ -32,7 +34,7 @@ if __name__ == "__main__":
 
     hsv = np.zeros_like(pre_frame)
 
-    hsv[..., 1] =255
+    hsv[..., 1] = 255
 
     while True:
 
@@ -41,7 +43,7 @@ if __name__ == "__main__":
 
         flow = cv.calcOpticalFlowFarneback(pre_gray, frame_gray, None, 0.5, 3, 15, 3, 5, 1.2, 0)
         mag, ang = cv.cartToPolar(flow[..., 0], flow[..., 1])
-        hsv[..., 0] = ang * 180 / np.pi / 2
+        hsv[..., 0] = ang * 180 / np.pi / 2  # convert radian to angle
         hsv[..., 2] = cv.normalize(mag, None, 0, 255, cv.NORM_MINMAX)
         bgr = cv.cvtColor(hsv, cv.COLOR_HSV2BGR)
         cv.imshow('optical flow', bgr)
@@ -52,5 +54,8 @@ if __name__ == "__main__":
             cv.imwrite('opticalfb.png', frame)
             cv.imwrite('opticalhsv.png', bgr)
         pre_gray = frame_gray.copy()
+
+
+
 
 
