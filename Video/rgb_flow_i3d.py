@@ -16,13 +16,18 @@ import os
 import numpy as np
 import cv2 as cv
 from multiprocessing import Pool
+from Video.flow_visualize import flow_to_color
 
 
 video_dir = '/home/alex/Documents/dataset/opencv_video'
-
+basketball_dir = '/home/alex/Documents/dataset/UCF_101/Basketball'
 npy_dir = '/home/alex/python_code/kinetics-i3d-master/data'
 
-pedestrian_dir = os.path.join(video_dir, 'pedestrian.avi')
+pedestrian_path = os.path.join(video_dir, 'pedestrian.avi')
+
+skateboard_path = os.path.join(basketball_dir, 'v_Basketball_g01_c01.avi')
+
+
 flow_dir = os.path.join(npy_dir, 'v_CricketShot_g04_c01_flow.npy')
 
 
@@ -53,7 +58,7 @@ def flow_to_rgb(flow):
 if __name__ == "__main__":
 
     #
-    cap = cv.VideoCapture(pedestrian_dir)
+    cap = cv.VideoCapture(skateboard_path)
 
     video_fps = cap.get(propId=cv.CAP_PROP_FPS)  # fps
     video_frames = cap.get(propId = cv.CAP_PROP_FRAME_COUNT) # frames
@@ -82,12 +87,19 @@ if __name__ == "__main__":
         max_val = lambda x: max(max(x.flatten()), abs(min(x.flatten())))
         flow = flow / (max_val(flow) + 1e-5)
 
+        # frame_flow = flow_to_color(flow)
+        # rgb_flow = np.hstack((cur_frame, frame_flow))
+
         frame_flow = flow_to_rgb(flow)
-        cv.imshow('optical flow', frame_flow)
+        # parallel display rgb and optical flow frame
+        # transfer pixel size to equal scale
+        rgb_flow = np.hstack((cur_frame/255., frame_flow))
+
+        cv.imshow('optical flow', rgb_flow)
         k = cv.waitKey(30) & 0xff
         if k == 27:
             break
 
-    optical_flow = np.load(flow_dir)
+    # optical_flow = np.load(flow_dir)
 
 
