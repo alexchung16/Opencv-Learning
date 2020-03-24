@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #------------------------------------------------------
-# @ File       : rgb_flow.py
+# @ File       : rgb_flow_i3d.py
 # @ Description: pip install opencv-contrib-python
 # @ Reference  : https://github.com/deepmind/kinetics-i3d
 # @ Author     : Alex Chung
