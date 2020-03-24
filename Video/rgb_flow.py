@@ -3,6 +3,7 @@
 #------------------------------------------------------
 # @ File       : rgb_flow.py
 # @ Description: pip install opencv-contrib-python
+# @ Reference  : https://github.com/deepmind/kinetics-i3d
 # @ Author     : Alex Chung
 # @ Contact    : yonganzhong@outlook.com
 # @ License    : Copyright (c) 2017-2018
@@ -15,7 +16,6 @@ import os
 import numpy as np
 import cv2 as cv
 from multiprocessing import Pool
-from Video.flow_visualize import flow_to_color
 
 
 video_dir = '/home/alex/Documents/dataset/opencv_video'
@@ -30,10 +30,36 @@ IMAGE_SIZE = 256
 
 BOUND = 15
 
+
+def flow_to_rgb(flow):
+    """
+    reference https://github.com/deepmind/kinetics-i3d
+    convert optical flow to rgb
+    :param flow_uv:
+    :return:
+    """
+    flow += 1.
+    flow /= 2.
+
+    flow_image = np.zeros((flow.shape[0], flow.shape[1], 3), dtype=np.float32)
+
+    flow_image[..., 0:2] = flow
+
+    flow_image[..., 2] = 0.5
+
+    return flow_image
+
+
 if __name__ == "__main__":
 
     #
     cap = cv.VideoCapture(pedestrian_dir)
+
+    video_fps = cap.get(propId=cv.CAP_PROP_FPS)  # fps
+    video_frames = cap.get(propId = cv.CAP_PROP_FRAME_COUNT) # frames
+
+    print('fps: {0}'.format(video_fps))
+    print('frames: {0}'.format(video_frames))
 
     pre_ret, pre_frame = cap.read()
 
@@ -49,19 +75,18 @@ if __name__ == "__main__":
         # flow = (flow+BOUND) * (255.0/BOUND)
         # flow = np.round(flow).astype(np.uint8)
 
-        flow_color = flow_to_color(flow, convert_to_bgr=False)
+        # reference https://github.com/deepmind/kinetics-i3d
+        flow[flow > 20] = 20
+        flow[flow < -20] = -20
+        # scale to [-1, 1]
+        max_val = lambda x: max(max(x.flatten()), abs(min(x.flatten())))
+        flow = flow / (max_val(flow) + 1e-5)
 
-        frame_flow = np.hstack((cur_frame, flow_color))
-
+        frame_flow = flow_to_rgb(flow)
         cv.imshow('optical flow', frame_flow)
         k = cv.waitKey(30) & 0xff
         if k == 27:
             break
-        elif k == ord('s'):
-            cv.imwrite('opticalfb.png', cur_frame)
-            cv.imwrite('opticalhsv.png', flow_color)
-        pre_gray = cur_gray.copy()
-
 
     optical_flow = np.load(flow_dir)
 
