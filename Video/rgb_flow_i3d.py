@@ -22,11 +22,14 @@ from Video.flow_visualize import flow_to_color
 video_dir = '/home/alex/Documents/dataset/opencv_video'
 basketball_dir = '/home/alex/Documents/dataset/UCF_101/Basketball'
 npy_dir = '/home/alex/python_code/kinetics-i3d-master/data'
+img_dir = '../Dataset/Video'
 
 pedestrian_path = os.path.join(video_dir, 'pedestrian.avi')
 
 skateboard_path = os.path.join(basketball_dir, 'v_Basketball_g01_c01.avi')
 
+
+traffic_path = os.path.join(img_dir, 'traffic.mp4')
 
 flow_dir = os.path.join(npy_dir, 'v_CricketShot_g04_c01_flow.npy')
 
@@ -58,7 +61,7 @@ def flow_to_rgb(flow):
 if __name__ == "__main__":
 
     #
-    cap = cv.VideoCapture(skateboard_path)
+    cap = cv.VideoCapture(traffic_path)
 
     video_fps = cap.get(propId=cv.CAP_PROP_FPS)  # fps
     video_frames = cap.get(propId = cv.CAP_PROP_FRAME_COUNT) # frames

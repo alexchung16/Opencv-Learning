@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------
 # @ File       : convert_rgb_flow.py
-# @ Description:  
+# @ Description:
+# @ Reference  : https://github.com/deepmind/kinetics-i3d/blob/f1fa01a332179e82cd655e7cd2f2f0c1c04f0c74/preprocess/hmdb_extract_flow.py
+#                https://github.com/Rhythmblue/i3d_finetune/issues/2
 # @ Author     : Alex Chung
 # @ Contact    : yonganzhong@outlook.com
 # @ License    : Copyright (c) 2017-2018
