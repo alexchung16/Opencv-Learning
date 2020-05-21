@@ -22,7 +22,7 @@ from Video.flow_visualize import flow_to_color
 video_dir = '/home/alex/Documents/dataset/opencv_video'
 basketball_dir = '/home/alex/Documents/dataset/UCF_101/Basketball'
 npy_dir = '/home/alex/python_code/kinetics-i3d-master/data'
-img_dir = '../Dataset/Video'
+img_dir = '../Data/Video'
 
 pedestrian_path = os.path.join(video_dir, 'pedestrian.avi')
 
@@ -46,13 +46,18 @@ def flow_to_rgb(flow):
     :param flow_uv:
     :return:
     """
+
+    # step 1 convert scale to [-1, 1]
+    flow[flow > 20] = 20
+    flow[flow < -20] = -20
+    max_val = lambda x: max(max(x.flatten()), abs(min(x.flatten())))
+    flow = flow / (max_val(flow) + 1e-5)
+    # step 2  convert scale to [0, 1]
     flow += 1.
     flow /= 2.
-
+    # step generate three channel array
     flow_image = np.zeros((flow.shape[0], flow.shape[1], 3), dtype=np.float32)
-
     flow_image[..., 0:2] = flow
-
     flow_image[..., 2] = 0.5
 
     return flow_image
@@ -61,7 +66,7 @@ def flow_to_rgb(flow):
 if __name__ == "__main__":
 
     #
-    cap = cv.VideoCapture(traffic_path)
+    cap = cv.VideoCapture(pedestrian_path)
 
     video_fps = cap.get(propId=cv.CAP_PROP_FPS)  # fps
     video_frames = cap.get(propId = cv.CAP_PROP_FRAME_COUNT) # frames
@@ -83,20 +88,16 @@ if __name__ == "__main__":
         # flow = (flow+BOUND) * (255.0/BOUND)
         # flow = np.round(flow).astype(np.uint8)
 
-        # reference https://github.com/deepmind/kinetics-i3d
-        flow[flow > 20] = 20
-        flow[flow < -20] = -20
-        # scale to [-1, 1]
-        max_val = lambda x: max(max(x.flatten()), abs(min(x.flatten())))
-        flow = flow / (max_val(flow) + 1e-5)
-
-        # frame_flow = flow_to_color(flow)
-        # rgb_flow = np.hstack((cur_frame, frame_flow))
-
-        frame_flow = flow_to_rgb(flow)
+        #-------------------# visulize method 1-------------------
+        frame_flow = flow_to_color(flow)
         # parallel display rgb and optical flow frame
-        # transfer pixel size to equal scale
-        rgb_flow = np.hstack((cur_frame/255., frame_flow))
+        rgb_flow = np.hstack((cur_frame, frame_flow))
+
+        # -------------------# visulize method 2-------------------
+        # frame_flow = flow_to_rgb(flow)
+        # # transfer pixel size to equal scale
+        # # parallel display rgb and optical flow frame
+        # rgb_flow = np.hstack((cur_frame/255., frame_flow))
 
         cv.imshow('optical flow', rgb_flow)
         k = cv.waitKey(30) & 0xff
