@@ -22,7 +22,7 @@ import tensorflow as tf
 from tensorflow.python.platform import app, flags
 from multiprocessing import Pool
 
-from Video.flow_visualize import flow_to_color
+from Video.optical_flow import flow_visualize
 
 video_dir = '/home/alex/Documents/dataset/opencv_video'
 pedestrian_dir = os.path.join(video_dir, 'pedestrian.avi')
