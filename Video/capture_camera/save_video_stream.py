@@ -49,7 +49,6 @@ def save_video_to_buffer(cap, num_second_per_clips=None, frame_height=None, fram
 
     # step get video info
     fps = cap.get(cv.CAP_PROP_FPS)
-
     height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
     width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     num_frame_per_clip = int(num_second_per_clips * fps)
@@ -143,16 +142,35 @@ def save_buffer_to_device(video_stream, save_path):
         save_video(video_stream, save_path, video_name, video, dst_height, dst_width)
 
 
-if __name__ == "__main__":
-    stream_path = 0
-    num_second_per_clips = 5
+def save_video_stream(stream_path=0, num_second_per_clips=5):
+    """
 
+    Args:
+        stream_path:
+        num_second_per_clips:
+
+    Returns:
+
+    """
+
+    cap = cv.VideoCapture(stream_path)
+    while cap.isOpened():
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.submit(save_video_to_buffer, cap, num_second_per_clips)
+            executor.submit(save_buffer_to_device, stream_path, output_path)
+    cap.release()
+
+
+def main():
+
+    stream_path = 0
     start = time.perf_counter()
     cap = cv.VideoCapture(stream_path)
     finish = time.perf_counter()
     print(f'Finished in {round(finish - start, 2)} second(s)')  # Finished in 2.77 second(s)
 
-    while cap.isOpened():
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(save_video_to_buffer, cap, num_second_per_clips)
-            executor.submit(save_buffer_to_device, stream_path, output_path)
+    save_video_stream(stream_path, num_second_per_clips=5)
+
+
+if __name__ == "__main__":
+    main()
