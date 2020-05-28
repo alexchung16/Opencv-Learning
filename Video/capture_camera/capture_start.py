@@ -12,7 +12,7 @@
 
 import os
 import cv2 as cv
-
+import time
 
 video_dataset = 'F:/python_code/dataset/video_demo'
 rafting_video = os.path.join(video_dataset, 'rafting.avi')
@@ -90,6 +90,41 @@ def convert_video_format(video_stream, output_path, dst_height=None, dst_width=N
         raise e
 
 
+def save_video_stream(video_stream, output_path):
+    """
+    save online video stream
+    Args:
+        video_stream:
+        output_path:
+
+    Returns:
+
+    """
+    cap = cv.VideoCapture(video_stream)
+    # step get video info
+    fps = cap.get(cv.CAP_PROP_FPS)
+    height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+    width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+
+    fourcc = cv.VideoWriter_fourcc('X', '2', '6', '4')  # H.264 codec
+    out = cv.VideoWriter(filename=output_path, fourcc=fourcc, fps=fps, frameSize=(width, height),
+                         isColor=True)
+    try:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                print("Can't receive frame (stream end?). Exiting ...")
+                break
+            start_time = time.perf_counter()
+            out.write(frame)
+            finish_time = time.perf_counter()
+            print(finish_time-start_time)
+        cap.release()
+    except cv.error as e:
+        print(f"Failed to save video, due to {e}")
+        raise e
+
+
 def main():
     stream_path = rafting_video
     cap = cv.VideoCapture(stream_path)
@@ -133,33 +168,36 @@ def main():
 
 
 if __name__ == "__main__":
-    video_stream = rafting_video
-    #----------------------get input video info------------------------------
-    cap = cv.VideoCapture(video_stream)
-    # cap.set(cv.CAP_PROP_FPS, 25)
-    # get fps(Frame per second)
-    fps = cap.get(cv.CAP_PROP_FPS)
-    print(f'Video FPS: {fps}')
-    # get frame count
-    count_frame = cap.get(cv.CAP_PROP_FRAME_COUNT)
-    print(f'Number frames of video: {count_frame}')
-    # get frame height and width
-    height = cap.get(cv.CAP_PROP_FRAME_HEIGHT)
-    width = cap.get(cv.CAP_PROP_FRAME_WIDTH)
-    print(f'Frame height: {height}')
-    print(f'Frame width: {width}')
-    # get codec format
-    src_codec_format = get_video_format(cap)
-    print(f'Video codec format: {src_codec_format}')
-    #-------------------convert video fomat
-    convert_video_format(video_stream=video_stream, output_path=output_video, is_show=True)
+    # video_stream = rafting_video
+    # #----------------------get input video info------------------------------
+    # cap = cv.VideoCapture(video_stream)
+    # # cap.set(cv.CAP_PROP_FPS, 25)
+    # # get fps(Frame per second)
+    # fps = cap.get(cv.CAP_PROP_FPS)
+    # print(f'Video FPS: {fps}')
+    # # get frame count
+    # count_frame = cap.get(cv.CAP_PROP_FRAME_COUNT)
+    # print(f'Number frames of video: {count_frame}')
+    # # get frame height and width
+    # height = cap.get(cv.CAP_PROP_FRAME_HEIGHT)
+    # width = cap.get(cv.CAP_PROP_FRAME_WIDTH)
+    # print(f'Frame height: {height}')
+    # print(f'Frame width: {width}')
+    # # get codec format
+    # src_codec_format = get_video_format(cap)
+    # print(f'Video codec format: {src_codec_format}')
+    # #-------------------convert video fomat
+    # convert_video_format(video_stream=video_stream, output_path=output_video, is_show=True)
+    #
+    # #----------------get target video codec format-------------------------
+    # cap_output = cv.VideoCapture(output_video)
+    # # get codec format
+    # dst_codec_format = get_video_format(cap_output)
+    # print(f'Target video codec format: {dst_codec_format}')
+    # print('Done!')
 
-    #----------------get target video codec format-------------------------
-    cap_output = cv.VideoCapture(output_video)
-    # get codec format
-    dst_codec_format = get_video_format(cap_output)
-    print(f'Target video codec format: {dst_codec_format}')
-    print('Done!')
+    save_video_stream(video_stream=0, output_path=output_video)
+
 
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #------------------------------------------------------
-# @ File       : save_online_video_stream
+# @ File       : save_video_stream
 # @ Description:  
 # @ Author     : Alex Chung
 # @ Contact    : yonganzhong@outlook.com
@@ -142,12 +142,13 @@ def save_buffer_to_device(video_stream, save_path):
         save_video(video_stream, save_path, video_name, video, dst_height, dst_width)
 
 
-def save_video_stream(stream_path=0, num_second_per_clips=5):
+def save_video_stream(stream_path, output_path, num_second_per_clips=5):
     """
-
+    save video stream
     Args:
         stream_path:
-        num_second_per_clips:
+        output_path：
+        num_second_per_clips: number second of per video clips
 
     Returns:
 
@@ -169,7 +170,7 @@ def main():
     finish = time.perf_counter()
     print(f'Finished in {round(finish - start, 2)} second(s)')  # Finished in 2.77 second(s)
 
-    save_video_stream(stream_path, num_second_per_clips=5)
+    save_video_stream(stream_path, output_path, num_second_per_clips=5)
 
 
 if __name__ == "__main__":
