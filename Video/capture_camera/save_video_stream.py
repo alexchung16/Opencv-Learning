@@ -170,6 +170,7 @@ def main():
     finish = time.perf_counter()
     print(f'Finished in {round(finish - start, 2)} second(s)')  # Finished in 2.77 second(s)
 
+    os.makedirs(output_path, exist_ok=True)
     save_video_stream(stream_path, output_path, num_second_per_clips=5)
 
 
