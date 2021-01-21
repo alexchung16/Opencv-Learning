@@ -99,7 +99,7 @@ def save_video(video_stream, save_path, video_name, video, dst_height, dst_width
     cap = cv.VideoCapture(video_stream)
     # step get video info
     fps = cap.get(cv.CAP_PROP_FPS)
-    fourcc = cv.VideoWriter_fourcc('X', '2', '6', '4')  # H.264 codec
+    fourcc = cv.VideoWriter_fourcc(*'XVID')  # H.264 codec
 
     video_path = os.path.join(save_path, str(video_name) + '.avi')
     out = cv.VideoWriter(filename=video_path, fourcc=fourcc, fps=fps, frameSize=(dst_width, dst_height),
